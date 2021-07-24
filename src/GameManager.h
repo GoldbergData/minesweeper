@@ -13,9 +13,9 @@ public:
 	bool isWinner();
 	bool isGameOver();
 private:
-	void createSolutionBoard(std::string fileName);
+	GameBoard* createSolutionBoard(std::string fileName);
 	//solution -> fill with content
-	void createDisplayBoard();
+	GameBoard* createDisplayBoard();
 
     GameBoard* solution;
 	GameBoard* display;

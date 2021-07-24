@@ -6,20 +6,42 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <fstream>
+
+using namespace std;
+
+struct Cell {
+	int value;
+	bool flag;
+	bool visible;
+
+	Cell(int value) {
+		this->value = value;
+		flag = false;
+		visible = false;
+	}
+};
 
 class GameBoard {
 	friend std::ostream& operator <<(std::ostream& out, const GameBoard& gb);
 public:
-	GameBoard(int rows, int cols);
+	//Constructor used to create initial solutions board
+	GameBoard(std::string fileName);
 	
 	int getValue(int row, int col) const;
+	std::vector<std::vector<int>>* getBoard() const;
 	void setValue(int row, int col, int value);
 	void setFlag(int row, int col);
-	bool isBomb(int row, int col) const; 
+	void revealCell(int row, int col);
+
+	bool isFlag(int row, int col) const;
+	bool isVisible(int row, int col) const;
+	bool isBomb(int row, int col) const;
 	bool isClear(int row, int col) const;
 	void printBoard() const;
 private:
-	std::vector<std::vector<int>>* board;
+	std::ifstream readFile(std::string fileName);
+	std::vector<std::vector<Cell>>* board;
 	int rows;
 	int cols;
 };
