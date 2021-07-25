@@ -1,0 +1,22 @@
+[
+{
+  "directory": "/Users/joshuagoldberg/Desktop/learncode/code/computer-science-study/cpp-edmond-college/cs_133/homework/minesweeper/src/sandbox/build",
+  "command": "/usr/bin/clang++   -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk -g -Wall -Wextra -Werror=return-type -Werror=uninitialized -Wunused-parameter -Wmissing-field-initializers -Wno-old-style-cast -Wno-sign-compare -Wno-sign-conversion -std=gnu++11 -o CMakeFiles/Minesweeper.dir/src/GameBoard.cpp.o -c /Users/joshuagoldberg/Desktop/learncode/code/computer-science-study/cpp-edmond-college/cs_133/homework/minesweeper/src/sandbox/src/GameBoard.cpp",
+  "file": "/Users/joshuagoldberg/Desktop/learncode/code/computer-science-study/cpp-edmond-college/cs_133/homework/minesweeper/src/sandbox/src/GameBoard.cpp"
+},
+{
+  "directory": "/Users/joshuagoldberg/Desktop/learncode/code/computer-science-study/cpp-edmond-college/cs_133/homework/minesweeper/src/sandbox/build",
+  "command": "/usr/bin/clang++   -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk -g -Wall -Wextra -Werror=return-type -Werror=uninitialized -Wunused-parameter -Wmissing-field-initializers -Wno-old-style-cast -Wno-sign-compare -Wno-sign-conversion -std=gnu++11 -o CMakeFiles/Minesweeper.dir/src/GameManager.cpp.o -c /Users/joshuagoldberg/Desktop/learncode/code/computer-science-study/cpp-edmond-college/cs_133/homework/minesweeper/src/sandbox/src/GameManager.cpp",
+  "file": "/Users/joshuagoldberg/Desktop/learncode/code/computer-science-study/cpp-edmond-college/cs_133/homework/minesweeper/src/sandbox/src/GameManager.cpp"
+},
+{
+  "directory": "/Users/joshuagoldberg/Desktop/learncode/code/computer-science-study/cpp-edmond-college/cs_133/homework/minesweeper/src/sandbox/build",
+  "command": "/usr/bin/clang++   -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk -g -Wall -Wextra -Werror=return-type -Werror=uninitialized -Wunused-parameter -Wmissing-field-initializers -Wno-old-style-cast -Wno-sign-compare -Wno-sign-conversion -std=gnu++11 -o CMakeFiles/Minesweeper.dir/src/gamemain.cpp.o -c /Users/joshuagoldberg/Desktop/learncode/code/computer-science-study/cpp-edmond-college/cs_133/homework/minesweeper/src/sandbox/src/gamemain.cpp",
+  "file": "/Users/joshuagoldberg/Desktop/learncode/code/computer-science-study/cpp-edmond-college/cs_133/homework/minesweeper/src/sandbox/src/gamemain.cpp"
+},
+{
+  "directory": "/Users/joshuagoldberg/Desktop/learncode/code/computer-science-study/cpp-edmond-college/cs_133/homework/minesweeper/src/sandbox/build",
+  "command": "/usr/bin/clang++   -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk -g -Wall -Wextra -Werror=return-type -Werror=uninitialized -Wunused-parameter -Wmissing-field-initializers -Wno-old-style-cast -Wno-sign-compare -Wno-sign-conversion -std=gnu++11 -o CMakeFiles/Minesweeper.dir/src/lib132.cpp.o -c /Users/joshuagoldberg/Desktop/learncode/code/computer-science-study/cpp-edmond-college/cs_133/homework/minesweeper/src/sandbox/src/lib132.cpp",
+  "file": "/Users/joshuagoldberg/Desktop/learncode/code/computer-science-study/cpp-edmond-college/cs_133/homework/minesweeper/src/sandbox/src/lib132.cpp"
+}
+]
