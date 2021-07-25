@@ -10,14 +10,26 @@
 class GameManager {
 public:
 	GameManager(std::string fileName);
-	bool isWinner();
-	bool isGameOver();
-private:
-	GameBoard* createSolutionBoard(std::string fileName);
-	//solution -> fill with content
-	GameBoard* createDisplayBoard();
 
-    GameBoard* solution;
-	GameBoard* display;
+	/**
+	 * @brief Recursive backtracking method to reveal cells.
+	 * 
+	 * @param row 
+	 * @param col 
+	 */
+	void clickCell(int row, int col);
+	int getValue(int row, int col) const;
+	void setFlag(int row, int col);
+	bool isGameEnd();
+	bool isWinner();
+	void printBoard();
+	int getRows() const;
+	int getCols() const;	
+private:
+    GameBoard* board;
+	bool gameEnd;
+	bool won;
+	void clickCellHelper(int row, int col);
+	void checkEndGame(bool bombClicked);
 };
 #endif

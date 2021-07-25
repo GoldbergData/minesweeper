@@ -1,71 +1,49 @@
-//this represent one board
+// //this represent one board
 
-#include <string>
-#include <vector>
-#include <iostream>
-#include "GameBoard.h"
+// #include <string>
+// #include <vector>
+// #include <iostream>
+// #include "GameManager.h"
 
-using namespace std;
+// using namespace std;
 
-int main() {
-    cout << "TRY BOARD CONSTRUCTOR" << endl;
-    GameBoard board("board1input.txt");
-    cout << board << endl << endl;
+// void runGame(GameManager* manager) {
+//     int x;
+//     int y;
+//     string line;
+//     manager->printBoard();
+//     cout << endl;
+
+//     cout << "Reveal location x: ";
+//     getline(cin, line);
+//     x = stoi(line);
+//     cout << endl;
+
+//     cout << "Reveal location y: ";
+//     getline(cin, line);
+//     y = stoi(line);
+//     cout << endl;
+
+//     manager->clickCell(x, y);
+// }
+
+// int main() {
+//     GameManager* manager = new GameManager("board1input.txt");
+
+//     while (!manager->isGameEnd()) {
+//         runGame(manager);
+//     }
+
+//     manager->printBoard();
     
-    /*
-    cout << "TRY GETVALUE" << endl;
-    cout <<"Value at 1, 1: " << board.getValue(1,1) << endl << endl;
+//     if (manager->isWinner()) {
+//         cout << "You won!";
+//     } else {
+//         cout << "You lose!";
+//     }
 
-    cout << "TRY SETVALUE" << endl;
-    board.setValue(1, 1, 4);
-    cout << "Value at 1, 1 set to 4: " << board.getValue(1, 1) << endl << endl;
+//     cout << endl;
 
-    cout << "TRY SETFLAG" << endl;
-    board.setValue(1, 1, 4);
-    cout << "Is there a flag at 1, 1 (before)? ";
-    if (board.isFlag(1, 1)) {
-        cout << "yes" << endl;
-    } else {
-        cout << "no" << endl;
-    }
-    board.setFlag(1, 1);
-    cout << "Is there a flag at 1, 1 (after)? ";
-    if (board.isFlag(1, 1)) {
-        cout << "yes" << endl;
-    } else {
-        cout << "no" << endl;
-    }
-        
-    cout << "TRY ISBOMB" << endl;
-    cout << "Is there a bomb at 1, 1? ";
-    if (board.isBomb(1, 1)) {
-        cout << "yes" << endl;
-    } else {
-        cout << "no" << endl;
-    }
-
-    cout << "Is there a bomb at 0, 2? ";
-    if (board.isBomb(0, 2)) {
-        cout << "yes" << endl;
-    } else {
-        cout << "no" << endl;
-    }
-
-    cout << "TRY ISCLEAR" << endl;
-    cout << "Is the space clear at 1, 1? ";
-    if (board.isBomb(1, 1)) {
-        cout << "yes" << endl;
-    } else {
-        cout << "no" << endl;
-    }
-    cout << "Is the space clear at 0, 0? ";
-    if (board.isClear(0, 0)) {
-        cout << "yes" << endl;
-    } else {
-        cout << "no" << endl;
-    }
-    */
-
-    return 0;
-}
+//     return 0;
+// }
 

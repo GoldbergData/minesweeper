@@ -18,12 +18,12 @@
 #include <iostream>
 #include <fstream>
 #include "GameBoard.h"
+#include "lib132.h"
 
 using namespace std;
 
 ifstream GameBoard::readFile(string fileName) {
-    ifstream input;
-    input.open(fileName);
+    ifstream input = openFile(fileName);
     string line;
     getline(input, line);
     rows = stoi(line);
@@ -36,7 +36,7 @@ ifstream GameBoard::readFile(string fileName) {
 GameBoard::GameBoard(string fileName) : board(nullptr), rows(0), cols(0) {
     ifstream input = readFile(fileName);
     string line;
-    board = new vector<vector<Cell>>;
+    board = new vector<vector<Cell> >;
     for (int i = 0; i < rows; i++) {
         getline(input, line);
         vector<Cell> rowVector;
@@ -51,6 +51,14 @@ GameBoard::GameBoard(string fileName) : board(nullptr), rows(0), cols(0) {
 
 int GameBoard::getValue(int row, int col) const {
     return (*board)[row][col].value;
+}
+
+int GameBoard::getRows() const {
+    return rows;
+}
+
+int GameBoard::getCols() const {
+    return cols;
 }
 
 void GameBoard::setValue(int row, int col, int value) {
@@ -77,8 +85,16 @@ bool GameBoard::isBomb(int row, int col) const {
     return (*board)[row][col].value == 9;
 }
 
+bool GameBoard::hasNeighborBombs(int row, int col) const {
+    return !isClear(row, col) && !isBomb(row, col);
+}
+
 bool GameBoard::isClear(int row, int col) const {
     return (*board)[row][col].value == 0;
+}
+
+bool GameBoard::inBounds(int row, int col) const {
+    return (row >= 0 && row < getRows()) && (col >= 0 && col < getCols());
 }
 
 ostream& operator <<(ostream& out, const GameBoard& gb) {

@@ -18,12 +18,12 @@
 #include <iostream>
 #include <fstream>
 #include "GameBoard.h"
+#include "lib132.h"
 
 using namespace std;
 
 ifstream GameBoard::readFile(string fileName) {
-    ifstream input;
-    input.open(fileName);
+    ifstream input = openFile(fileName);
     string line;
     getline(input, line);
     rows = stoi(line);
