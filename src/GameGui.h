@@ -24,6 +24,10 @@ public:
 private:
     GWindow* window;
     GameManager* gameManager;
+
+    std::string switchCellValue(int row, int col);
+    int convertCoord(int coord);
+
     int windowSize;
     int squareSize;
     static const std::vector<std::string> mapFiles;

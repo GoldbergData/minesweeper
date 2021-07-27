@@ -14,12 +14,16 @@
 using namespace std;
 using namespace sgl;
 
+
+
 const vector<string> GameGui::mapFiles = {"board1input.txt"};
 
 GButton* gbSetMap;
 GButton* gbReset;
 GChooser* gcMapSelect;
 GLabel* glInstructions;
+
+GLabel* glMousePos;
 
 GameGui::GameGui(int squareSize) {
     window = new GWindow();
@@ -94,14 +98,49 @@ void GameGui::update() {
     // }
 }
 
+string GameGui::switchCellValue(int row, int col) {
+    switch (gameManager->getValue(row, col)) {
+        case 0: return "-";
+        case 1: return "1";
+        case 2: return "2";
+        case 3: return "3";
+        case 4: return "4";
+        case 5: return "5";
+        case 6: return "6";
+        case 7: return "7";
+        case 8: return "8";
+        case 9: return "B";
+        default: return "UNKNOWN";
+    }
+}
+
 void GameGui::redraw() {
     int offsetX = 10;
-    int offsetY = 10;
+    int offsetY = 30;
     for (int i = 0; i < gameManager->getRows(); i++) {
-        for (int j = 1; i <= gameManager->getCols(); j++) {
+        for (int j = 0; j < gameManager->getCols(); j++) {
             // string cellValue = to_string(gameManager->getValue(i, j));
-            window->drawString("X", offsetX + j * squareSize, 
+            string cellValue = switchCellValue(i, j);
+            window->drawString(cellValue, offsetX + j * squareSize, 
                 offsetY + i * squareSize);
-        }        
+        }      
     }    
+}
+
+int GameGui::convertCoord(int coord) {
+    int coord = coord == 0 ? 1 : coord;
+    return (windowSize / squareSize) - (windowSize / coord);
+}
+
+void processMouseEvent(GEvent mouseEvent) {
+    int x = mouseEvent.getX();
+    int y = mouseEvent.getY();
+    int col = convertCoord(x);
+    int row = convertCoord(y);
+    glMousePos->setLabel("(x = " + std::to_string(x) + ", y = " + std::to_string(y) + ")");
+    int type = mouseEvent.getEventType();
+    if (type == MOUSE_PRESSED && mouseEvent.isLeftClick()) {
+       gameManager->clickCell(row, col);
+    }
+    
 }
