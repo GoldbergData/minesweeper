@@ -19,7 +19,6 @@ public:
     void drawGrid();
     void drawColoredLine(double startx, double starty, double endx, double endy,
                               double lineWidth, int color);        
-    void update();
     void redraw();
     void eventLoop();
 private:
@@ -30,6 +29,7 @@ private:
     void processMouseEvent(int row, int col, GEvent mouseEvent);
     int convertCoord(int coord);
     bool inBounds(int row, int col);
+    void concludeGame();
 
 
 

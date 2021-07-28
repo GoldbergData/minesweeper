@@ -35,8 +35,8 @@ GameGui::GameGui(int squareSize) {
     window->setAutoRepaint(false);
     drawGrid();
     redraw();
-    createMapChooser();
-    createButtons();
+    //createMapChooser();
+    //createButtons();
 }
 
 void GameGui::setMapFile() {
@@ -90,15 +90,9 @@ void GameGui::drawColoredLine(double startx, double starty, double endx,
     window->draw(line);
 }
 
-void GameGui::update() {
-    // while (!gameManager.isGameEnd()) {
-
-    // }
-}
-
 string GameGui::switchCellValue(int row, int col) {
     switch (gManager->getValue(row, col)) {
-        case 0: return "-";
+        case 0: return "";
         case 1: return "1";
         case 2: return "2";
         case 3: return "3";
@@ -113,6 +107,8 @@ string GameGui::switchCellValue(int row, int col) {
 }
 
 void GameGui::redraw() {
+    window->clearCanvasPixels();
+    drawGrid();
     int offsetX = 10;
     int offsetY = 30;
     for (int i = 0; i < gManager->getRows(); i++) {
@@ -123,11 +119,12 @@ void GameGui::redraw() {
                 window->drawString(cellValue, offsetX + j * squareSize, 
                     offsetY + i * squareSize);
             } else {
-                window->drawString("X", offsetX + j * squareSize, 
+                window->drawString("", offsetX + j * squareSize, 
                     offsetY + i * squareSize);
             }
         }      
     }    
+    window->repaint();
 }
 
 int GameGui::convertCoord(int coord) {
@@ -142,30 +139,34 @@ void GameGui::processMouseEvent(int row, int col, GEvent mouseEvent) {
     if (inBounds(row, col)) { //if within bounds of the grid
         if (mouseEvent.isLeftClick()) { //run clickCell if left mouse click
             gManager->clickCell(row, col);
-        } else if (mouseEvent.isRightClick()) { //run setFlag if right mouse click
+        } else if (mouseEvent.isRightClick()) { //run setFlag if right mouse clic
             gManager->setFlag(row, col);
         }
         redraw(); //redraw the grid
-        update(); //check status of the game
     }    
 }
 
+void GameGui::concludeGame() {
+    if (gManager->isWinner()) {
+        cout << "You win!" << endl;
+    } else {
+        cout << "You lose!" << endl;
+    }
+}
+
 void GameGui::eventLoop() {
-    while (true) {
-        GEvent event = waitForEvent(ACTION_EVENT | MOUSE_EVENT | WINDOW_EVENT);
+    while (!gManager->isGameEnd()) {
+        GEvent event = waitForClick();
         if (event.getEventClass() == MOUSE_EVENT) {
             GMouseEvent mouseEvent(event);
-            // calculate row/col that the user clicked on
             int col = convertCoord(mouseEvent.getX());
             int row = convertCoord(mouseEvent.getY());
-
-            glMousePos->setLabel("(x = " + std::to_string(row) + ", y = " + std::to_string(col) + ")");
             processMouseEvent(row, col, mouseEvent);
-
         } else if (event.getEventClass() == WINDOW_EVENT) {
             if (event.getEventType() == WINDOW_CLOSED) {
                 break; //ends game when window is closed
             }
         }
     }
+    concludeGame();
 }
