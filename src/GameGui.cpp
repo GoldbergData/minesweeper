@@ -14,8 +14,6 @@
 using namespace std;
 using namespace sgl;
 
-
-
 const vector<string> GameGui::mapFiles = {"board1input.txt"};
 
 GButton* gbSetMap;
@@ -27,8 +25,8 @@ GLabel* glMousePos;
 
 GameGui::GameGui(int squareSize) {
     window = new GWindow();
-    gameManager = new GameManager("board1input.txt");    
-    this->windowSize = gameManager->getRows() * squareSize;
+    gManager = new GameManager("board1input.txt");    
+    this->windowSize = gManager->getRows() * squareSize;
     this->squareSize = squareSize;
     window->setCanvasSize(windowSize + 300, windowSize);  //offset for buttons
     window->setLocation(300, 100);
@@ -46,7 +44,7 @@ void GameGui::setMapFile() {
     // Todo: need to create deconstructor
     // delete gameManager;
     // gameManager = nullptr;
-    gameManager = new GameManager(fileName);
+    gManager = new GameManager(fileName);
 }
 
 void GameGui::createButtons() {
@@ -99,7 +97,7 @@ void GameGui::update() {
 }
 
 string GameGui::switchCellValue(int row, int col) {
-    switch (gameManager->getValue(row, col)) {
+    switch (gManager->getValue(row, col)) {
         case 0: return "-";
         case 1: return "1";
         case 2: return "2";
@@ -117,30 +115,57 @@ string GameGui::switchCellValue(int row, int col) {
 void GameGui::redraw() {
     int offsetX = 10;
     int offsetY = 30;
-    for (int i = 0; i < gameManager->getRows(); i++) {
-        for (int j = 0; j < gameManager->getCols(); j++) {
+    for (int i = 0; i < gManager->getRows(); i++) {
+        for (int j = 0; j < gManager->getCols(); j++) {
             // string cellValue = to_string(gameManager->getValue(i, j));
             string cellValue = switchCellValue(i, j);
-            window->drawString(cellValue, offsetX + j * squareSize, 
-                offsetY + i * squareSize);
+            if (gManager->isVisible(i, j)) {
+                window->drawString(cellValue, offsetX + j * squareSize, 
+                    offsetY + i * squareSize);
+            } else {
+                window->drawString("X", offsetX + j * squareSize, 
+                    offsetY + i * squareSize);
+            }
         }      
     }    
 }
 
 int GameGui::convertCoord(int coord) {
-    int coord = coord == 0 ? 1 : coord;
-    return (windowSize / squareSize) - (windowSize / coord);
+    return (coord / squareSize);
 }
 
-void processMouseEvent(GEvent mouseEvent) {
-    int x = mouseEvent.getX();
-    int y = mouseEvent.getY();
-    int col = convertCoord(x);
-    int row = convertCoord(y);
-    glMousePos->setLabel("(x = " + std::to_string(x) + ", y = " + std::to_string(y) + ")");
-    int type = mouseEvent.getEventType();
-    if (type == MOUSE_PRESSED && mouseEvent.isLeftClick()) {
-       gameManager->clickCell(row, col);
+bool GameGui::inBounds(int row, int col) {
+    return row < (windowSize / squareSize) && col < (windowSize / squareSize);
+}
+
+void GameGui::processMouseEvent(int row, int col, GEvent mouseEvent) {
+    if (inBounds(row, col)) { //if within bounds of the grid
+        if (mouseEvent.isLeftClick()) { //run clickCell if left mouse click
+            gManager->clickCell(row, col);
+        } else if (mouseEvent.isRightClick()) { //run setFlag if right mouse click
+            gManager->setFlag(row, col);
+        }
+        redraw(); //redraw the grid
+        update(); //check status of the game
+    }    
+}
+
+void GameGui::eventLoop() {
+    while (true) {
+        GEvent event = waitForEvent(ACTION_EVENT | MOUSE_EVENT | WINDOW_EVENT);
+        if (event.getEventClass() == MOUSE_EVENT) {
+            GMouseEvent mouseEvent(event);
+            // calculate row/col that the user clicked on
+            int col = convertCoord(mouseEvent.getX());
+            int row = convertCoord(mouseEvent.getY());
+
+            glMousePos->setLabel("(x = " + std::to_string(row) + ", y = " + std::to_string(col) + ")");
+            processMouseEvent(row, col, mouseEvent);
+
+        } else if (event.getEventClass() == WINDOW_EVENT) {
+            if (event.getEventType() == WINDOW_CLOSED) {
+                break; //ends game when window is closed
+            }
+        }
     }
-    
 }

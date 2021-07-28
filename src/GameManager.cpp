@@ -91,6 +91,10 @@ void GameManager::checkEndGame(bool bombClicked) {
     }
 }
 
+bool GameManager::isVisible(int row, int col) {
+    return board->isVisible(row, col);
+}
+
 bool GameManager::isWinner() {
     return won;
 }
