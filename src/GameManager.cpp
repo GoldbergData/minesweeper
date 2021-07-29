@@ -34,6 +34,7 @@ GameManager::GameManager(int level) {
     }
     gameEnd = false;
     won = false;
+    cout << *board << endl;
 }
 
 int GameManager::getValue(int row, int col) const {
@@ -70,6 +71,7 @@ void GameManager::clickCellHelper(int row, int col) {
         }
         if (board->isClear(row, col)) {
             // Clockwise for conceptual thinking
+            clickCellHelper(row - 1, col - 1);
             clickCellHelper(row - 1, col);
             clickCellHelper(row - 1, col + 1);
             clickCellHelper(row, col + 1);

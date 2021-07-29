@@ -70,6 +70,7 @@ GameBoard::GameBoard(int bNum, int rows, int cols) : board(nullptr), rows(rows),
             row = rand() % rows;
             col = rand() % cols;
         }
+        cout << "bomb placed at: " << row << ", " << col << endl;
         setValue(row, col, 9);
     }
 
