@@ -12,7 +12,8 @@ using namespace sgl;
 
 class GameGui {
 public:
-	GameGui(int squareSize);
+	GameGui();
+    GameGui(string difficulty);
     void setMapFile();
     void createButtons();
     void createMapChooser();

@@ -10,6 +10,7 @@
 class GameManager {
 public:
 	GameManager(std::string fileName);
+	GameManager(int level);
 
 	/**
 	 * @brief Recursive backtracking method to reveal cells.

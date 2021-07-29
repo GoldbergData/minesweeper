@@ -49,6 +49,52 @@ GameBoard::GameBoard(string fileName) : board(nullptr), rows(0), cols(0) {
     input.close();
 }
 
+//Constructor used to create initial solutions board
+GameBoard::GameBoard(int bNum, int rows, int cols) : board(nullptr), rows(rows), cols(cols) {
+    board = new vector<vector<Cell> >;
+
+    //create game board of 0's
+    for (int i = 0; i < rows; i++) {
+        vector<Cell> rowVector;
+        for (int j = 0; j < cols; j++) {
+            rowVector.push_back(Cell(0));
+        }
+        board->push_back(rowVector);
+    }
+
+    //randomly place bombs
+    for(int i = 0; i < bNum; i++) { //# of bombs on board
+        int row = rand() % rows;
+        int col = rand() % cols;
+        while (getValue(row, col) != 0) { //checks if the space is empty
+            row = rand() % rows;
+            col = rand() % cols;
+        }
+        setValue(row, col, 9);
+    }
+
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            if (!isBomb(i, j)) {
+                int countBombs = countNeighborBombs(i, j);
+                setValue(i, j, countBombs);
+            }
+        }
+    }
+}
+
+int GameBoard::countNeighborBombs(int row, int col) {
+    int sum = 0;
+    for (int i = row - 1; i <= row + 1; i++ ) {
+        for (int j = col - 1; j <= col + 1; j++) {
+            if (inBounds(i, j) && !(i == row && j == col) && isBomb(i, j)) {
+                sum++;
+            }
+        }
+    }
+    return sum;
+}
+
 int GameBoard::getValue(int row, int col) const {
     return (*board)[row][col].value;
 }
@@ -94,7 +140,7 @@ bool GameBoard::isClear(int row, int col) const {
 }
 
 bool GameBoard::inBounds(int row, int col) const {
-    return (row >= 0 && row < getRows()) && (col >= 0 && col < getCols());
+    return (row >= 0 && row < rows) && (col >= 0 && col < cols);
 }
 
 ostream& operator <<(ostream& out, const GameBoard& gb) {

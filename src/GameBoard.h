@@ -27,6 +27,7 @@ class GameBoard {
 public:
 	//Constructor used to create initial solutions board
 	GameBoard(std::string fileName);
+	GameBoard(int bNum, int rows, int cols);
 	
 	int getValue(int row, int col) const;
 	int getRows() const;
@@ -44,6 +45,8 @@ public:
 	bool inBounds(int row, int col) const;
 	void printBoard() const;
 private:
+	int countNeighborBombs(int row, int col);
+
 	std::ifstream readFile(std::string fileName);
 	std::vector<std::vector<Cell> >* board;
 	int rows;

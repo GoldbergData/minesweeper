@@ -23,11 +23,33 @@ GLabel* glInstructions;
 
 GLabel* glMousePos;
 
-GameGui::GameGui(int squareSize) {
+GameGui::GameGui() {
     window = new GWindow();
-    gManager = new GameManager("board1input.txt");    
-    this->windowSize = gManager->getRows() * squareSize;
-    this->squareSize = squareSize;
+    gManager = new GameManager("board1input.txt");
+    squareSize = 50;    
+    windowSize = gManager->getRows() * squareSize;
+    window->setCanvasSize(windowSize + 300, windowSize);  //offset for buttons
+    window->setLocation(300, 100);
+    window->setBackground("black");   //background color for GUI buttons area
+    window->setExitOnClose(true);
+    window->setAutoRepaint(false);
+    drawGrid();
+    redraw();
+    //createMapChooser();
+    //createButtons();
+}
+
+GameGui::GameGui(string difficulty) {
+    window = new GWindow();
+    if (difficulty == "hard") {
+        gManager = new GameManager(3); 
+    } else if (difficulty == "med") {
+        gManager = new GameManager(2); 
+    } else {
+        gManager = new GameManager(1); 
+    }  
+    squareSize = 50;    
+    windowSize = gManager->getRows() * squareSize;
     window->setCanvasSize(windowSize + 300, windowSize);  //offset for buttons
     window->setLocation(300, 100);
     window->setBackground("black");   //background color for GUI buttons area
@@ -92,7 +114,7 @@ void GameGui::drawColoredLine(double startx, double starty, double endx,
 
 string GameGui::switchCellValue(int row, int col) {
     switch (gManager->getValue(row, col)) {
-        case 0: return "";
+        case 0: return "X";
         case 1: return "1";
         case 2: return "2";
         case 3: return "3";

@@ -24,6 +24,18 @@ GameManager::GameManager(std::string fileName) {
     won = false;
 }
 
+GameManager::GameManager(int level) {
+    if (level == 2) {
+        board = new GameBoard(40, 16, 16);
+    } else if (level == 3) {
+        board = new GameBoard(99, 30, 16);
+    } else {
+        board = new GameBoard(10, 9, 9);
+    }
+    gameEnd = false;
+    won = false;
+}
+
 int GameManager::getValue(int row, int col) const {
     return board->getValue(row, col);
 }
