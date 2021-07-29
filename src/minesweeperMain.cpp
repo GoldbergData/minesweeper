@@ -1,8 +1,7 @@
 #include "GameGui.h"
 
 int main() {
-    //GameGui gameGui(50);
-    GameGui gameGui("easy");
+    GameGui gameGui;
     gameGui.eventLoop();
     return 0;
 }

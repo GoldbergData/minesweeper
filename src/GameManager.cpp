@@ -28,7 +28,7 @@ GameManager::GameManager(int level) {
     if (level == 2) {
         board = new GameBoard(40, 16, 16);
     } else if (level == 3) {
-        board = new GameBoard(99, 30, 16);
+        board = new GameBoard(99, 16, 30);
     } else {
         board = new GameBoard(10, 9, 9);
     }
@@ -71,14 +71,13 @@ void GameManager::clickCellHelper(int row, int col) {
         }
         if (board->isClear(row, col)) {
             // Clockwise for conceptual thinking
-            clickCellHelper(row - 1, col - 1);
-            clickCellHelper(row - 1, col);
-            clickCellHelper(row - 1, col + 1);
-            clickCellHelper(row, col + 1);
-            clickCellHelper(row + 1, col + 1);
-            clickCellHelper(row + 1, col);
-            clickCellHelper(row + 1, col - 1);
-            clickCellHelper(row, col - 1);
+            for (int i = row - 1; i <= row + 1; i++ ) {
+                for (int j = col - 1; j <= col + 1; j++) {
+                    if (!(i == row && j == col)) {
+                        clickCellHelper(i, j);            
+                    }
+                }
+            }
         }
     }
 }
@@ -107,6 +106,10 @@ void GameManager::checkEndGame(bool bombClicked) {
 
 bool GameManager::isVisible(int row, int col) {
     return board->isVisible(row, col);
+}
+
+bool GameManager::isFlag(int row, int col) {
+    return board->isFlag(row, col);
 }
 
 bool GameManager::isWinner() {

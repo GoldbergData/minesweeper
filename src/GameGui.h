@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 #include "gwindow.h"
+#include "gradiobutton.h"
+#include "gbutton.h"
 #include "GameManager.h"
 
 using namespace sgl;
@@ -13,29 +15,27 @@ using namespace sgl;
 class GameGui {
 public:
 	GameGui();
-    GameGui(string difficulty);
     void setMapFile();
     void createButtons();
     void createMapChooser();
-    void drawGrid();
-    void drawColoredLine(double startx, double starty, double endx, double endy,
-                              double lineWidth, int color);        
     void redraw();
     void eventLoop();
 private:
     GWindow* window;
     GameManager* gManager;
-
+    int windowSizeX;
+    int windowSizeY;
+    int squareSize;
+    std::string difficulty;
+    void checkDifficulty();
+    void initializeGame();
+    void configureWindow();
     std::string switchCellValue(int row, int col);
     void processMouseEvent(int row, int col, GEvent mouseEvent);
+    void createSingleRadio(std::string text, GRadioButton*& nameOut);
+    void createRadioButtons();
     int convertCoord(int coord);
     bool inBounds(int row, int col);
     void concludeGame();
-
-
-
-    int windowSize;
-    int squareSize;
-    static const std::vector<std::string> mapFiles;
 };
 #endif

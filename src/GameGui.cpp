@@ -3,6 +3,7 @@
 #include <vector>
 #include "gwindow.h"
 #include "gevent.h"
+#include "gradiobutton.h"
 #include "gbutton.h"
 #include "gchooser.h"
 #include "glabel.h"
@@ -14,107 +15,103 @@
 using namespace std;
 using namespace sgl;
 
-const vector<string> GameGui::mapFiles = {"board1input.txt"};
+GLabel* glBackgrounds;
+GRadioButton* grbEasy;
+GRadioButton* grbMedium;
+GRadioButton* grbHard;
 
-GButton* gbSetMap;
 GButton* gbReset;
-GChooser* gcMapSelect;
 GLabel* glInstructions;
 
 GLabel* glMousePos;
 
-GameGui::GameGui() {
+// GameGui::GameGui() {
+//     window = new GWindow();
+//     gManager = new GameManager("board1input.txt");
+//     squareSize = 50;    
+//     windowSize = gManager->getRows() * squareSize;
+//     window->setCanvasSize(windowSize + 300, windowSize);  //offset for buttons
+//     window->setLocation(300, 100);
+//     window->setBackground("black");   //background color for GUI buttons area
+//     window->setExitOnClose(true);
+//     window->setAutoRepaint(false);
+//     drawGrid();
+//     redraw();
+//     //createMapChooser();
+//     //createButtons();
+// }
+
+GameGui::GameGui() : squareSize(50) {
     window = new GWindow();
-    gManager = new GameManager("board1input.txt");
-    squareSize = 50;    
-    windowSize = gManager->getRows() * squareSize;
-    window->setCanvasSize(windowSize + 300, windowSize);  //offset for buttons
+    createButtons();
+    createRadioButtons();
+    initializeGame();
+}
+
+void GameGui::configureWindow() {
+    windowSizeX = gManager->getCols() * squareSize;
+    windowSizeY = gManager->getRows() * squareSize;
+    window->setCanvasSize(windowSizeX + 300, windowSizeY);  //offset for buttons
     window->setLocation(300, 100);
     window->setBackground("black");   //background color for GUI buttons area
     window->setExitOnClose(true);
-    window->setAutoRepaint(false);
-    drawGrid();
-    redraw();
-    //createMapChooser();
-    //createButtons();
+    window->setAutoRepaint(false);    
 }
 
-GameGui::GameGui(string difficulty) {
-    window = new GWindow();
+void GameGui::initializeGame() {
+    checkDifficulty();
     if (difficulty == "hard") {
-        gManager = new GameManager(3); 
+        gManager = new GameManager(3);
     } else if (difficulty == "med") {
         gManager = new GameManager(2); 
     } else {
         gManager = new GameManager(1); 
-    }  
-    squareSize = 50;    
-    windowSize = gManager->getRows() * squareSize;
-    window->setCanvasSize(windowSize + 300, windowSize);  //offset for buttons
-    window->setLocation(300, 100);
-    window->setBackground("black");   //background color for GUI buttons area
-    window->setExitOnClose(true);
-    window->setAutoRepaint(false);
-    drawGrid();
+    }
+    configureWindow();
     redraw();
-    //createMapChooser();
-    //createButtons();
 }
 
-void GameGui::setMapFile() {
-    string fileName = gcMapSelect->getSelectedItem() + ".txt";
-    // Todo: need to create deconstructor
-    // delete gameManager;
-    // gameManager = nullptr;
-    gManager = new GameManager(fileName);
+void GameGui::checkDifficulty() {
+    if (grbEasy->isSelected()) {
+        difficulty = "easy";
+    } else if (grbMedium->isSelected()) {
+        difficulty = "med";
+    } else {
+        difficulty = "hard";
+    }
 }
 
 void GameGui::createButtons() {
-    gbSetMap = new GButton("SET MAP");
-    gbSetMap->setClickListener([this] {
-        setMapFile();
-    });
-
-    gbReset = new GButton("RESET");
-    gbReset->setClickListener([this] {
-        setMapFile();
-    });
-
-    window->addToRegion(gbSetMap, "East");
+    gbReset = new GButton("Reset");
     window->addToRegion(gbReset, "East");
+    gbReset->setClickListener([this] {
+        initializeGame();
+    });
 }
 
-void GameGui::createMapChooser() {
-    gcMapSelect = new GChooser(mapFiles);
-    glInstructions = new GLabel("Select map to begin:");
-    glInstructions->setColor("white");
-    window->addToRegion(glInstructions, "East");
-    window->addToRegion(gcMapSelect, "East");
-}
+void GameGui::createSingleRadio(string text, GRadioButton*& nameOut) {
+    GRadioButton* button = new GRadioButton(text);
+    button->setActionCommand(text);
+    button->setColor("white");
+    window->addToRegion(button, "East");
+    nameOut = button;
+ }
 
-void GameGui::drawGrid() {
-    drawColoredLine(0, 0, 0, windowSize, 2, 0xffffff);
-    for (int i = 1; i <= windowSize / squareSize; i++) {
-        drawColoredLine(i * squareSize, 0, i * squareSize, windowSize, 2, 0xffffff);
-    }
-
-    drawColoredLine(0, 0, windowSize, 0, 2, 0xffffff);
-    for (int i = 1; i <= windowSize / squareSize; i++) {
-        drawColoredLine(0, i * squareSize, windowSize, i * squareSize, 2, 0xffffff);
-    }    
-}
-
-void GameGui::drawColoredLine(double startx, double starty, double endx, 
-    double endy, double lineWidth, int color) {
-    GLine line(startx, starty, endx, endy);
-    line.setLineWidth(lineWidth);
-    line.setColor(color);
-    window->draw(line);
+void GameGui::createRadioButtons() {
+    //label
+    glBackgrounds = new GLabel("Difficulty:");
+    glBackgrounds->setColor("white");
+    window->addToRegion(glBackgrounds, "East");
+    //buttons
+    createSingleRadio("Easy", grbEasy);
+    createSingleRadio("Medium", grbMedium);
+    createSingleRadio("Hard", grbHard);
+    grbEasy->setSelected(true);
 }
 
 string GameGui::switchCellValue(int row, int col) {
     switch (gManager->getValue(row, col)) {
-        case 0: return "X";
+        case 0: return "";
         case 1: return "1";
         case 2: return "2";
         case 3: return "3";
@@ -130,19 +127,22 @@ string GameGui::switchCellValue(int row, int col) {
 
 void GameGui::redraw() {
     window->clearCanvasPixels();
-    drawGrid();
     int offsetX = 10;
     int offsetY = 30;
     for (int i = 0; i < gManager->getRows(); i++) {
         for (int j = 0; j < gManager->getCols(); j++) {
-            // string cellValue = to_string(gameManager->getValue(i, j));
             string cellValue = switchCellValue(i, j);
             if (gManager->isVisible(i, j)) {
+                window->setFillColor("#000000");
+                window->fillRect(j * squareSize, i * squareSize, squareSize, squareSize);                
                 window->drawString(cellValue, offsetX + j * squareSize, 
                     offsetY + i * squareSize);
-            } else {
-                window->drawString("", offsetX + j * squareSize, 
+            } else if (gManager->isFlag(i, j)) {
+                window->drawString("F", offsetX + j * squareSize, 
                     offsetY + i * squareSize);
+            } else {
+                window->setFillColor("#6E6E6E");
+                window->fillRect(j * squareSize, i * squareSize, squareSize, squareSize);
             }
         }      
     }    
@@ -154,7 +154,7 @@ int GameGui::convertCoord(int coord) {
 }
 
 bool GameGui::inBounds(int row, int col) {
-    return row < (windowSize / squareSize) && col < (windowSize / squareSize);
+    return row < gManager->getRows() && col < gManager->getCols();
 }
 
 void GameGui::processMouseEvent(int row, int col, GEvent mouseEvent) {

@@ -17,6 +17,7 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include <time.h>
 #include "GameBoard.h"
 #include "lib132.h"
 
@@ -61,6 +62,8 @@ GameBoard::GameBoard(int bNum, int rows, int cols) : board(nullptr), rows(rows),
         }
         board->push_back(rowVector);
     }
+
+    srand(time(0));
 
     //randomly place bombs
     for(int i = 0; i < bNum; i++) { //# of bombs on board

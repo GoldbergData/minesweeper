@@ -21,6 +21,7 @@ public:
 	void clickCell(int row, int col);
 	int getValue(int row, int col) const;
 	void setFlag(int row, int col);
+	bool isFlag(int row, int col);
 	bool isVisible(int row, int col);
 	bool isGameEnd();
 	bool isWinner();
