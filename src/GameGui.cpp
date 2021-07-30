@@ -67,8 +67,10 @@ void GameGui::initializeGame() {
     } else {
         gManager = new GameManager(1); 
     }
+    //cout << "minimum clicks to win: " << gManager->gameSolver() << endl;
     configureWindow();
     redraw();
+    eventLoop();
 }
 
 void GameGui::checkDifficulty() {
@@ -138,6 +140,8 @@ void GameGui::redraw() {
                 window->drawString(cellValue, offsetX + j * squareSize, 
                     offsetY + i * squareSize);
             } else if (gManager->isFlag(i, j)) {
+                window->setFillColor("#6E6E6E");
+                window->fillRect(j * squareSize, i * squareSize, squareSize, squareSize);    
                 window->drawString("F", offsetX + j * squareSize, 
                     offsetY + i * squareSize);
             } else {
@@ -160,7 +164,7 @@ bool GameGui::inBounds(int row, int col) {
 void GameGui::processMouseEvent(int row, int col, GEvent mouseEvent) {
     if (inBounds(row, col)) { //if within bounds of the grid
         if (mouseEvent.isLeftClick()) { //run clickCell if left mouse click
-            gManager->clickCell(row, col);
+            gManager->clickCellGame(row, col);
         } else if (mouseEvent.isRightClick()) { //run setFlag if right mouse clic
             gManager->setFlag(row, col);
         }
@@ -177,7 +181,9 @@ void GameGui::concludeGame() {
 }
 
 void GameGui::eventLoop() {
+    cout << "start eventLoop" << endl;
     while (!gManager->isGameEnd()) {
+        cout << "in game" << endl;
         GEvent event = waitForClick();
         if (event.getEventClass() == MOUSE_EVENT) {
             GMouseEvent mouseEvent(event);

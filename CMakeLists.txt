@@ -198,11 +198,11 @@ set(sgl_LIBS
 	-lpthread
 )
 
-add_executable(StarterProject
+add_executable(Minesweeper
 	${sgl_SRCS}
 )
 
-qt5_use_modules(StarterProject
+qt5_use_modules(Minesweeper
 	Widgets
 	Multimedia
 	Network
@@ -215,12 +215,12 @@ foreach(resFile ${ProjectResources})
 endforeach()
 # file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/res/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
 
-target_include_directories(StarterProject
+target_include_directories(Minesweeper
 	PRIVATE
 	lib/
 	src/
 )
 
-target_link_libraries(StarterProject
+target_link_libraries(Minesweeper
 	${sgl_LIBS}
 )

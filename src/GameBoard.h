@@ -36,6 +36,7 @@ public:
 	void setValue(int row, int col, int value);
 	void setFlag(int row, int col);
 	void revealCell(int row, int col);
+	void closeCell(int row, int col);
 
 	bool isFlag(int row, int col) const;
 	bool isVisible(int row, int col) const;
@@ -46,7 +47,6 @@ public:
 	void printBoard() const;
 private:
 	int countNeighborBombs(int row, int col);
-
 	std::ifstream readFile(std::string fileName);
 	std::vector<std::vector<Cell> >* board;
 	int rows;

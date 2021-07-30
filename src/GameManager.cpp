@@ -26,60 +26,79 @@ GameManager::GameManager(std::string fileName) {
 
 GameManager::GameManager(int level) {
     if (level == 2) {
-        board = new GameBoard(40, 16, 16);
+        board = new GameBoard(3, 5, 5);
     } else if (level == 3) {
-        board = new GameBoard(99, 16, 30);
+        board = new GameBoard(4, 6, 6);
     } else {
-        board = new GameBoard(10, 9, 9);
+        board = new GameBoard(2, 3, 3);
     }
     gameEnd = false;
     won = false;
     cout << *board << endl;
 }
 
-int GameManager::getValue(int row, int col) const {
-    return board->getValue(row, col);
+void GameManager::addPoint(int row, int col, vector<Point>& openedCell) {
+    Point p = {row, col};
+    openedCell.push_back(p);
 }
 
-void GameManager::setFlag(int row, int col) {
-    board->setFlag(row, col);
-}
-
-void GameManager::clickCell(int row, int col) {
-    if (board->inBounds(row, col)) {
-        if (!(board->isVisible(row, col))) {
-            bool bombClicked = board->isBomb(row, col);
-            bool clearCell = board->isClear(row, col);
-            if (clearCell) {
-                clickCellHelper(row, col);
-            } else {
-                // If player clicks on a bomb or a cell with neigh bombs
-                board->revealCell(row, col);
-            }
-            checkEndGame(bombClicked);
-        }
+void GameManager::clickCell(int row, int col, vector<Point>& openedCell) {
+    if (board->inBounds(row, col) && !(board->isVisible(row, col))) {
+        bool bombClicked = board->isBomb(row, col);
+        clickCellHelper(row, col, openedCell);
+        checkEndGame(bombClicked);
     }
 }
 
-void GameManager::clickCellHelper(int row, int col) {
+void GameManager::clickCellGame(int row, int col) {
     if (board->inBounds(row, col) && !(board->isVisible(row, col))) {
-        // cout << "DEBUG row: " << row << endl;
-        // cout << "DEBUG col: " << col << endl;
-        if (!(board->isBomb(row, col))) {
-            // Refactor: remove redundant call of revealCell()
-            board->revealCell(row, col);
-        }
-        if (board->isClear(row, col)) {
+        bool bombClicked = board->isBomb(row, col);
+        clickCellGameHelper(row, col);
+        checkEndGame(bombClicked);
+    }
+}
+
+void GameManager::clickCellGameHelper(int row, int col) {
+    if (board->inBounds(row, col) && !(board->isVisible(row, col))) {
+        board->revealCell(row, col);
+        if (board->isClear(row, col)) { //if cell is clear
             // Clockwise for conceptual thinking
             for (int i = row - 1; i <= row + 1; i++ ) {
                 for (int j = col - 1; j <= col + 1; j++) {
                     if (!(i == row && j == col)) {
-                        clickCellHelper(i, j);            
+                        clickCellGameHelper(i, j);            
                     }
                 }
             }
         }
     }
+}
+
+void GameManager::clickCellHelper(int row, int col, vector<Point>& openedCell) {
+    if (board->inBounds(row, col) && !(board->isVisible(row, col))) {
+        addPoint(row, col, openedCell);
+        board->revealCell(row, col);
+        if (board->isClear(row, col)) { //if cell is clear
+            for (int i = row - 1; i <= row + 1; i++ ) {
+                for (int j = col - 1; j <= col + 1; j++) {
+                    if (!(i == row && j == col)) {
+                        clickCellHelper(i, j, openedCell);            
+                    }
+                }
+            }
+        }
+    }
+}
+
+void GameManager::unClickCell(vector<Point> openedCell) {
+    for (int i = 0; i < openedCell.size(); i++) {
+        Point p = openedCell[i];
+        int row = p.row;
+        int col = p.col;
+        board->closeCell(row, col);
+    }
+    gameEnd = false;
+        won = false;
 }
 
 void GameManager::checkEndGame(bool bombClicked) {
@@ -104,12 +123,46 @@ void GameManager::checkEndGame(bool bombClicked) {
     }
 }
 
-bool GameManager::isVisible(int row, int col) {
-    return board->isVisible(row, col);
+int GameManager::gameSolver(int clickCount) {
+    if (isGameEnd()) {
+        if (isWinner()) {
+            return clickCount;
+        } else {
+            return getRows() * getCols();
+        }
+    } else {
+        vector<Point> openedCell;
+        int min = getRows() * getCols(); //initialize min value
+        for (int i = 0; i < getRows(); i++) {
+            for (int j = 0; j < getCols(); j++) {
+                if (!isVisible(i, j)) {
+                    clickCell(i, j, openedCell); //change to board
+                    int moveCount = gameSolver(clickCount + 1);
+                    if (moveCount < min) {
+                        min = moveCount;
+                    }
+                    unClickCell(openedCell);
+                }               
+            }
+        }
+        return min;
+    }
+}
+
+void GameManager::setFlag(int row, int col) {
+    board->setFlag(row, col);
+}
+
+int GameManager::getValue(int row, int col) const {
+    return board->getValue(row, col);
 }
 
 bool GameManager::isFlag(int row, int col) {
     return board->isFlag(row, col);
+}
+
+bool GameManager::isVisible(int row, int col) {
+    return board->isVisible(row, col);
 }
 
 bool GameManager::isWinner() {
@@ -130,4 +183,40 @@ int GameManager::getRows() const {
 
 int GameManager::getCols() const {
     return board->getCols();
+}
+
+void GameManager::printSolBoard() {
+    cout << "Solution Board:" << endl;
+    for (int i = 0; i < getRows(); i++) {
+        for (int j = 0; j < getCols(); j++) {
+                if (getValue(i, j) == 9) {
+                    cout << "B" << " ";
+                } else if (getValue(i, j) == 0) {
+                    cout << "-" << " ";
+                } else {
+                    cout << getValue(i, j) << " ";
+                }
+        }
+        cout << endl;
+    }
+}
+
+void GameManager::printDispBoard() {
+    cout << "Display Board:" << endl;
+    for (int i = 0; i < getRows(); i++) {
+        for (int j = 0; j < getCols(); j++) {
+            if (!isVisible(i, j)) {
+                cout << "X ";
+            } else {
+                if (getValue(i, j) == 9) {
+                    cout << "B" << " ";
+                } else if (getValue(i, j) == 0) {
+                    cout << "-" << " ";
+                } else {
+                    cout << getValue(i, j) << " ";
+                }
+            }
+        }
+        cout << endl;
+    }
 }

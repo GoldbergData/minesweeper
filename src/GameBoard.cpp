@@ -73,7 +73,6 @@ GameBoard::GameBoard(int bNum, int rows, int cols) : board(nullptr), rows(rows),
             row = rand() % rows;
             col = rand() % cols;
         }
-        cout << "bomb placed at: " << row << ", " << col << endl;
         setValue(row, col, 9);
     }
 
@@ -122,6 +121,11 @@ void GameBoard::setFlag(int row, int col) {
 void GameBoard::revealCell(int row, int col) {
     (*board)[row][col].visible = true;
 }
+
+void GameBoard::closeCell(int row, int col) {
+    (*board)[row][col].visible = false;
+}
+
 
 bool GameBoard::isFlag(int row, int col) const {
     return (*board)[row][col].flag;

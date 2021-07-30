@@ -2,6 +2,6 @@
 
 int main() {
     GameGui gameGui;
-    gameGui.eventLoop();
+
     return 0;
 }
