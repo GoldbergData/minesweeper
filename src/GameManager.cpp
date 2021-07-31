@@ -18,23 +18,19 @@
 
 using namespace std;
 
-GameManager::GameManager(std::string fileName) {
-    board = new GameBoard(fileName);
-    gameEnd = false;
-    won = false;
-}
-
 GameManager::GameManager(int level) {
     if (level == 2) {
-        board = new GameBoard(3, 5, 5);
+        board = new GameBoard(3, 4, 4);
     } else if (level == 3) {
-        board = new GameBoard(4, 6, 6);
+        board = new GameBoard(4, 5, 5);
     } else {
         board = new GameBoard(2, 3, 3);
     }
     gameEnd = false;
     won = false;
-    cout << *board << endl;
+    printBoard(true);
+    cout << endl << endl;
+    printBoard(false);
 }
 
 void GameManager::addPoint(int row, int col, vector<Point>& openedCell) {
@@ -173,8 +169,8 @@ bool GameManager::isGameEnd() {
     return gameEnd;
 }
 
-void GameManager::printBoard() {
-    cout << (*board);
+void GameManager::printBoard(bool displayBoard) {
+    board->printBoard(displayBoard);
 }
 
 int GameManager::getRows() const {
@@ -183,40 +179,4 @@ int GameManager::getRows() const {
 
 int GameManager::getCols() const {
     return board->getCols();
-}
-
-void GameManager::printSolBoard() {
-    cout << "Solution Board:" << endl;
-    for (int i = 0; i < getRows(); i++) {
-        for (int j = 0; j < getCols(); j++) {
-                if (getValue(i, j) == 9) {
-                    cout << "B" << " ";
-                } else if (getValue(i, j) == 0) {
-                    cout << "-" << " ";
-                } else {
-                    cout << getValue(i, j) << " ";
-                }
-        }
-        cout << endl;
-    }
-}
-
-void GameManager::printDispBoard() {
-    cout << "Display Board:" << endl;
-    for (int i = 0; i < getRows(); i++) {
-        for (int j = 0; j < getCols(); j++) {
-            if (!isVisible(i, j)) {
-                cout << "X ";
-            } else {
-                if (getValue(i, j) == 9) {
-                    cout << "B" << " ";
-                } else if (getValue(i, j) == 0) {
-                    cout << "-" << " ";
-                } else {
-                    cout << getValue(i, j) << " ";
-                }
-            }
-        }
-        cout << endl;
-    }
 }

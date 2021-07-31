@@ -15,7 +15,6 @@ using namespace sgl;
 class GameGui {
 public:
 	GameGui();
-    void setMapFile();
     void createButtons();
     void createMapChooser();
     void redraw();
@@ -23,8 +22,6 @@ public:
 private:
     GWindow* window;
     GameManager* gManager;
-    int windowSizeX;
-    int windowSizeY;
     int squareSize;
     std::string difficulty;
     void checkDifficulty();

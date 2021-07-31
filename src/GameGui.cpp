@@ -25,33 +25,18 @@ GLabel* glInstructions;
 
 GLabel* glMousePos;
 
-// GameGui::GameGui() {
-//     window = new GWindow();
-//     gManager = new GameManager("board1input.txt");
-//     squareSize = 50;    
-//     windowSize = gManager->getRows() * squareSize;
-//     window->setCanvasSize(windowSize + 300, windowSize);  //offset for buttons
-//     window->setLocation(300, 100);
-//     window->setBackground("black");   //background color for GUI buttons area
-//     window->setExitOnClose(true);
-//     window->setAutoRepaint(false);
-//     drawGrid();
-//     redraw();
-//     //createMapChooser();
-//     //createButtons();
-// }
-
 GameGui::GameGui() : squareSize(50) {
     window = new GWindow();
     createButtons();
     createRadioButtons();
     initializeGame();
+    eventLoop();
 }
 
 void GameGui::configureWindow() {
-    windowSizeX = gManager->getCols() * squareSize;
-    windowSizeY = gManager->getRows() * squareSize;
-    window->setCanvasSize(windowSizeX + 300, windowSizeY);  //offset for buttons
+    int windowSizeCol = gManager->getCols() * squareSize;
+    int windowSizeRow = gManager->getRows() * squareSize;
+    window->setCanvasSize(windowSizeCol + 300, windowSizeRow);  //offset for buttons
     window->setLocation(300, 100);
     window->setBackground("black");   //background color for GUI buttons area
     window->setExitOnClose(true);
@@ -67,10 +52,14 @@ void GameGui::initializeGame() {
     } else {
         gManager = new GameManager(1); 
     }
-    //cout << "minimum clicks to win: " << gManager->gameSolver() << endl;
+    /**
+     * @brief This takes an extremely long time 2-10 minutes for any board
+     * bigger than easy.
+     * 
+     */
+    cout << "minimum clicks to win: " << gManager->gameSolver() << endl;
     configureWindow();
     redraw();
-    eventLoop();
 }
 
 void GameGui::checkDifficulty() {
@@ -181,20 +170,17 @@ void GameGui::concludeGame() {
 }
 
 void GameGui::eventLoop() {
-    cout << "start eventLoop" << endl;
-    while (!gManager->isGameEnd()) {
-        cout << "in game" << endl;
+    bool closeGame = false;
+    while (!closeGame) {
         GEvent event = waitForClick();
-        if (event.getEventClass() == MOUSE_EVENT) {
+        if (event.getEventClass() == MOUSE_EVENT && !gManager->isGameEnd()) {
             GMouseEvent mouseEvent(event);
             int col = convertCoord(mouseEvent.getX());
             int row = convertCoord(mouseEvent.getY());
             processMouseEvent(row, col, mouseEvent);
-        } else if (event.getEventClass() == WINDOW_EVENT) {
-            if (event.getEventType() == WINDOW_CLOSED) {
-                break; //ends game when window is closed
-            }
+        } else {
+            closeGame = event.getEventClass() != WINDOW_EVENT && 
+                event.getEventType() != WINDOW_CLOSED;            
         }
     }
-    concludeGame();
 }

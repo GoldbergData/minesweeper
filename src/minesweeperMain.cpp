@@ -2,6 +2,5 @@
 
 int main() {
     GameGui gameGui;
-
     return 0;
 }

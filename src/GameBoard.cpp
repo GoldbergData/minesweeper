@@ -151,41 +151,24 @@ bool GameBoard::inBounds(int row, int col) const {
     return (row >= 0 && row < rows) && (col >= 0 && col < cols);
 }
 
-ostream& operator <<(ostream& out, const GameBoard& gb) {
-    out << "Solution Board:" << endl;
-    for (int i = 0; i < gb.board->size(); i++) {
-        for (int j = 0; j < (*gb.board)[i].size(); j++) {
-                if (gb.isBomb(i, j)) {
-                    out << "B" << " ";
-                } else if (gb.isClear(i, j)) {
-                    out << "-" << " ";
+void GameBoard::printBoard(bool displayBoard) const {
+    cout << "Solution Board:" << endl;
+    for (int i = 0; i < getRows(); i++) {
+        for (int j = 0; j < getCols(); j++) {
+            if (displayBoard && !isVisible(i, j)) {
+                if (isFlag(i, j)) {
+                    cout << "F ";
                 } else {
-                    out << gb.getValue(i, j) << " ";
-                }
-        }
-        out << endl;
-    }
-    out << endl;
-    out << "Display Board:" << endl;
-    for (int i = 0; i < gb.board->size(); i++) {
-        for (int j = 0; j < (*gb.board)[i].size(); j++) {
-            if (!gb.isVisible(i, j)) {
-                if (gb.isFlag(i, j)) {
-                    out << "F ";
-                } else {
-                    out << "X ";
+                    cout << "X ";
                 }
             } else {
-                if (gb.isBomb(i, j)) {
-                    out << "B" << " ";
-                } else if (gb.isClear(i, j)) {
-                    out << "-" << " ";
+                if (isBomb(i, j)) {
+                    cout << "B ";
+                } else if (isClear(i, j)) {
+                    cout << "- ";
                 } else {
-                    out << gb.getValue(i, j) << " ";
-                }
+                    cout << getValue(i, j) << " ";
             }
         }
-        out << endl;
     }
-    return out;
 }

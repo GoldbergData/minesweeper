@@ -14,24 +14,22 @@ struct Point {
 
 class GameManager {
 public:
-	GameManager(std::string fileName);
 	GameManager(int level);
-
 	void clickCell(int row, int col, vector<Point>& openedCell);
 	void clickCellGame(int row, int col);
 	void unClickCell(vector<Point> openedCell);
+	int gameSolver(int clickCount = 0);
 
 	int getValue(int row, int col) const;
+	int getRows() const;
+	int getCols() const;	
 	void setFlag(int row, int col);
+
 	bool isFlag(int row, int col);
 	bool isVisible(int row, int col);
-	
 	bool isGameEnd();
 	bool isWinner();
-	void printBoard();
-	int getRows() const;
-	int getCols() const;
-	int gameSolver(int clickCount = 0);
+	void printBoard(bool displayBoard);
 private:
     GameBoard* board;
 	bool gameEnd;
@@ -40,9 +38,5 @@ private:
 	void clickCellGameHelper(int row, int col);
 	void checkEndGame(bool bombClicked);
 	void addPoint(int row, int col, vector<Point>& openedCell);
-
-	void printSolBoard();
-	void printDispBoard();
-	
 };
 #endif
