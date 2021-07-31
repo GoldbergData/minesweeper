@@ -1,17 +1,15 @@
 /**
- * @file GameBoard.cpp
- * @author your name (you@domain.com)
- * @brief 
+ * @file GameBoard.h
+ * @author Joshua Goldberg (j.goldberg4674@edmail.edcc.edu), Matthew Kim 
+ * (m.kim3007@edmail.edcc.edu)
+ * @brief Implementation of class GameBoard.
+ * 
  * @version 0.1
- * @date 2021-07-22
+ * @date 2021-07-30
  * 
  * @copyright Copyright (c) 2021
  * 
  */
-
-//Joshua Goldberg, Matthew Kim
-
-//this class is the implementation...
 
 #include <string>
 #include <vector>
@@ -22,33 +20,6 @@
 #include "lib132.h"
 
 using namespace std;
-
-ifstream GameBoard::readFile(string fileName) {
-    ifstream input = openFile(fileName);
-    string line;
-    getline(input, line);
-    rows = stoi(line);
-    getline(input, line);
-    cols = stoi(line);
-    return input;
-}
-
-//Constructor used to create initial solutions board
-GameBoard::GameBoard(string fileName) : board(nullptr), rows(0), cols(0) {
-    ifstream input = readFile(fileName);
-    string line;
-    board = new vector<vector<Cell> >;
-    for (int i = 0; i < rows; i++) {
-        getline(input, line);
-        vector<Cell> rowVector;
-        for (int j = 0; j < cols; j++) {
-            int num = stoi(line.substr(j, 1));
-            rowVector.push_back(Cell(num));
-        }
-        board->push_back(rowVector);
-    }
-    input.close();
-}
 
 //Constructor used to create initial solutions board
 GameBoard::GameBoard(int bNum, int rows, int cols) : board(nullptr), rows(rows), cols(cols) {
@@ -62,7 +33,7 @@ GameBoard::GameBoard(int bNum, int rows, int cols) : board(nullptr), rows(rows),
         }
         board->push_back(rowVector);
     }
-
+    // Random seed so different board is generated when constructor is called
     srand(time(0));
 
     //randomly place bombs
@@ -152,7 +123,7 @@ bool GameBoard::inBounds(int row, int col) const {
 }
 
 void GameBoard::printBoard(bool displayBoard) const {
-    cout << "Solution Board:" << endl;
+    cout << (displayBoard ? "Display Board:" : "Solution Board:") << endl;
     for (int i = 0; i < getRows(); i++) {
         for (int j = 0; j < getCols(); j++) {
             if (displayBoard && !isVisible(i, j)) {
@@ -168,7 +139,9 @@ void GameBoard::printBoard(bool displayBoard) const {
                     cout << "- ";
                 } else {
                     cout << getValue(i, j) << " ";
+                }
             }
         }
+        cout << endl;
     }
 }

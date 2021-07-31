@@ -27,7 +27,7 @@ GLabel* glMousePos;
 
 GameGui::GameGui() : squareSize(50) {
     window = new GWindow();
-    createButtons();
+    createResetButton();
     createRadioButtons();
     initializeGame();
     eventLoop();
@@ -57,7 +57,9 @@ void GameGui::initializeGame() {
      * bigger than easy.
      * 
      */
-    cout << "minimum clicks to win: " << gManager->gameSolver() << endl;
+    cout << "Calculating minimum clicks to win..." << endl;
+    cout << "Minimum number of clicks to win: " << gManager->gameSolver() 
+        << endl;
     configureWindow();
     redraw();
 }
@@ -72,7 +74,7 @@ void GameGui::checkDifficulty() {
     }
 }
 
-void GameGui::createButtons() {
+void GameGui::createResetButton() {
     gbReset = new GButton("Reset");
     window->addToRegion(gbReset, "East");
     gbReset->setClickListener([this] {
@@ -101,41 +103,56 @@ void GameGui::createRadioButtons() {
 }
 
 string GameGui::switchCellValue(int row, int col) {
-    switch (gManager->getValue(row, col)) {
-        case 0: return "";
-        case 1: return "1";
-        case 2: return "2";
-        case 3: return "3";
-        case 4: return "4";
-        case 5: return "5";
-        case 6: return "6";
-        case 7: return "7";
-        case 8: return "8";
-        case 9: return "B";
-        default: return "UNKNOWN";
+    if (gManager->isFlag(row, col) && !gManager->isVisible(row, col)) {
+        return "F";
+    } else {
+        switch (gManager->getValue(row, col)) {
+            case 0: return "";
+            case 1: return "1";
+            case 2: return "2";
+            case 3: return "3";
+            case 4: return "4";
+            case 5: return "5";
+            case 6: return "6";
+            case 7: return "7";
+            case 8: return "8";
+            case 9: return "B";
+            default: return "UNKNOWN";
+        } 
     }
 }
 
 void GameGui::redraw() {
     window->clearCanvasPixels();
-    int offsetX = 10;
-    int offsetY = 30;
+    // Dealing with pixels
+    int fontHeight = -10;
+    int fontWidth = 10;
+    int offsetX = (squareSize - fontWidth) / 2;
+    int offsetY = (squareSize - fontHeight) / 2;
     for (int i = 0; i < gManager->getRows(); i++) {
         for (int j = 0; j < gManager->getCols(); j++) {
             string cellValue = switchCellValue(i, j);
             if (gManager->isVisible(i, j)) {
                 window->setFillColor("#000000");
-                window->fillRect(j * squareSize, i * squareSize, squareSize, squareSize);                
-                window->drawString(cellValue, offsetX + j * squareSize, 
-                    offsetY + i * squareSize);
+                window->fillRect(
+                    j * squareSize, i * squareSize, squareSize, squareSize
+                    );
+                window->drawString(
+                    cellValue, offsetX + j * squareSize, offsetY + i * squareSize
+                    );
             } else if (gManager->isFlag(i, j)) {
                 window->setFillColor("#6E6E6E");
-                window->fillRect(j * squareSize, i * squareSize, squareSize, squareSize);    
-                window->drawString("F", offsetX + j * squareSize, 
-                    offsetY + i * squareSize);
+                window->fillRect(
+                    j * squareSize, i * squareSize, squareSize, squareSize
+                    );
+                window->drawString(
+                    cellValue, offsetX + j * squareSize, offsetY + i * squareSize
+                    );
             } else {
                 window->setFillColor("#6E6E6E");
-                window->fillRect(j * squareSize, i * squareSize, squareSize, squareSize);
+                window->fillRect(
+                    j * squareSize, i * squareSize, squareSize, squareSize
+                    );
             }
         }      
     }    
@@ -171,16 +188,28 @@ void GameGui::concludeGame() {
 
 void GameGui::eventLoop() {
     bool closeGame = false;
-    while (!closeGame) {
+    while (!closeGame) { // Runs until game has been closed
         GEvent event = waitForClick();
+        // If the game is over, mouse clicks are not processed
+        // To continue playing, the player has to hit the reset button
         if (event.getEventClass() == MOUSE_EVENT && !gManager->isGameEnd()) {
             GMouseEvent mouseEvent(event);
             int col = convertCoord(mouseEvent.getX());
             int row = convertCoord(mouseEvent.getY());
             processMouseEvent(row, col, mouseEvent);
+            // Have to check since gameEnd state can change after
+            // processMouseEvent
+            if (gManager->isGameEnd()) {
+                concludeGame();    
+            }
+        // If Game is over, repeated print out conclusion of game
+        // and do not process any further mouseclicks on the gameboard   
+        } else if (gManager->isGameEnd()) {
+            concludeGame();
         } else {
-            closeGame = event.getEventClass() != WINDOW_EVENT && 
-                event.getEventType() != WINDOW_CLOSED;            
+            // If player closes the window, the program is terminated
+            closeGame = event.getEventClass() == WINDOW_EVENT &&
+                event.getEventType() == WINDOW_CLOSED;
         }
     }
 }
